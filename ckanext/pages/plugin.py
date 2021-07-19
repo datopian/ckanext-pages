@@ -10,7 +10,7 @@ import ckan.lib.helpers as h
 import actions
 import auth
 
-if toolkit.check_ckan_version(min_version='2.5'):
+if p.toolkit.check_ckan_version(min_version='2.5'):
     from ckan.lib.plugins import DefaultTranslation
 
     class PagesPluginBase(p.SingletonPlugin, DefaultTranslation):
@@ -25,9 +25,9 @@ ignore_missing = toolkit.get_validator('ignore_missing')
 
 def build_pages_nav_main(*args):
 
-    about_menu = toolkit.asbool(config.get('ckanext.pages.about_menu', True))
-    group_menu = toolkit.asbool(config.get('ckanext.pages.group_menu', True))
-    org_menu = toolkit.asbool(config.get('ckanext.pages.organization_menu', True))
+    about_menu = p.toolkit.asbool(config.get('ckanext.pages.about_menu', True))
+    group_menu = p.toolkit.asbool(config.get('ckanext.pages.group_menu', True))
+    org_menu = p.toolkit.asbool(config.get('ckanext.pages.organization_menu', True))
 
     new_args = []
     for arg in args:
@@ -42,7 +42,7 @@ def build_pages_nav_main(*args):
     output = h.build_nav_main(*new_args)
 
     # do not display any private datasets in menu even for sysadmins
-    pages_list = toolkit.get_action('ckanext_pages_list')(None, {'order': True, 'private': False})
+    pages_list = p.toolkit.get_action('ckanext_pages_list')(None, {'order': True, 'private': False})
 
     page_name = ''
 
@@ -68,7 +68,7 @@ def build_pages_nav_main(*args):
 
 
 def render_content(content):
-    allow_html = toolkit.asbool(config.get('ckanext.pages.allow_html', False))
+    allow_html = p.toolkit.asbool(config.get('ckanext.pages.allow_html', False))
     try:
         return h.render_markdown(content, allow_html=allow_html)
     except TypeError:
@@ -81,7 +81,7 @@ def get_wysiwyg_editor():
 
 
 def get_recent_blog_posts(number=5, exclude=None):
-    blog_list = toolkit.get_action('ckanext_pages_list')(
+    blog_list = p.toolkit.get_action('ckanext_pages_list')(
         None, {'order_publish_date': True, 'private': False,
                'page_type': 'blog'}
     )
@@ -96,12 +96,6 @@ def get_recent_blog_posts(number=5, exclude=None):
     return new_list
 
 
-def get_plus_icon():
-    if toolkit.check_ckan_version(min_version='2.7'):
-        return 'plus-square'
-    return 'plus-sign-alt'
-
-
 class PagesPlugin(PagesPluginBase):
     p.implements(p.IConfigurer, inherit=True)
     p.implements(p.ITemplateHelpers, inherit=True)
@@ -112,21 +106,21 @@ class PagesPlugin(PagesPluginBase):
 
 
     def update_config(self, config):
-        self.organization_pages = toolkit.asbool(config.get('ckanext.pages.organization', False))
-        self.group_pages = toolkit.asbool(config.get('ckanext.pages.group', False))
+        self.organization_pages = p.toolkit.asbool(config.get('ckanext.pages.organization', False))
+        self.group_pages = p.toolkit.asbool(config.get('ckanext.pages.group', False))
 
-        toolkit.add_template_directory(config, 'theme/templates_main')
+        p.toolkit.add_template_directory(config, 'theme/templates_main')
         if self.group_pages:
-            toolkit.add_template_directory(config, 'theme/templates_group')
+            p.toolkit.add_template_directory(config, 'theme/templates_group')
         if self.organization_pages:
-            toolkit.add_template_directory(config, 'theme/templates_organization')
+            p.toolkit.add_template_directory(config, 'theme/templates_organization')
 
-        toolkit.add_resource('fanstatic', 'pages')
-        toolkit.add_public_directory(config, 'public')
+        p.toolkit.add_resource('fanstatic', 'pages')
+        p.toolkit.add_public_directory(config, 'public')
 
-        toolkit.add_resource('theme/public', 'ckanext-pages')
-        toolkit.add_resource('theme/resources', 'pages-theme')
-        toolkit.add_public_directory(config, 'theme/public')
+        p.toolkit.add_resource('theme/public', 'ckanext-pages')
+        p.toolkit.add_resource('theme/resources', 'pages-theme')
+        p.toolkit.add_public_directory(config, 'theme/public')
 
     def configure(self, config):
         return
@@ -136,8 +130,7 @@ class PagesPlugin(PagesPluginBase):
             'build_nav_main': build_pages_nav_main,
             'render_content': render_content,
             'get_wysiwyg_editor': get_wysiwyg_editor,
-            'get_recent_blog_posts': get_recent_blog_posts,
-            'pages_get_plus_icon': get_plus_icon
+            'get_recent_blog_posts': get_recent_blog_posts
         }
 
     def after_map(self, map):
@@ -235,8 +228,8 @@ class TextBoxView(p.SingletonPlugin):
     p.implements(p.IResourceView, inherit=True)
 
     def update_config(self, config):
-        toolkit.add_resource('textbox/theme', 'textbox')
-        toolkit.add_template_directory(config, 'textbox/templates')
+        p.toolkit.add_resource('textbox/theme', 'textbox')
+        p.toolkit.add_template_directory(config, 'textbox/templates')
 
     def info(self):
         schema = {

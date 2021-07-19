@@ -3,20 +3,7 @@
 from setuptools import setup, find_packages
 import os
 
-
-# Extract version
-HERE = os.path.abspath(os.path.dirname(__file__))
-INIT_PY = os.path.join(HERE, 'ckanext', 'pages', '__init__.py')
-version = None
-with io.open(INIT_PY) as f:
-    for line in f:
-        m = re.match(r'__version__\s*=\s*u?[\'"](.*)[\'"]', line)
-        if m:
-            version = m.groups()[0]
-            break
-if version is None:
-    raise RuntimeError('Could not extract version from "{}".'.format(INIT_PY))
-
+version = '0.1'
 
 # Recurse into package files
 def package_files(directory):
@@ -56,7 +43,8 @@ setup(
         textboxview=ckanext.pages.plugin:TextBoxView
         [babel.extractors]
         ckan = ckan.lib.extract:extract_ckan
-    """,
+
+	""",
     message_extractors={
         'ckanext': [
             ('**.py', 'python', None),
