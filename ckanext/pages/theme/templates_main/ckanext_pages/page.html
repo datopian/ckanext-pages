@@ -2,10 +2,10 @@
 
 {% block subtitle %}{{ c.page.title }}{% endblock %}
 
-{% block primary %}
+{% block primary_content %}
   <section class="module-content">
     {% if h.check_access('ckanext_pages_update') %}
-      {% link_for _('Edit'), controller='ckanext.pages.controller:PagesController', action='pages_edit', page='/' + c.page.name, class_='btn btn-primary pull-right', icon='edit' %}
+      {% link_for _('Edit'), controller='ckanext.pages.controller:PagesController', action='pages_edit', page='/' + c.page.name, class_='btn btn-default pull-right', icon='edit' %}
     {% endif %}
     <h1 class="page-heading">{{ c.page.title }}</h1>
     {% if c.page.content %}
@@ -24,5 +24,3 @@
     {% endif %}
   </section>
 {% endblock %}
-
-{% block secondary %}{% endblock %}

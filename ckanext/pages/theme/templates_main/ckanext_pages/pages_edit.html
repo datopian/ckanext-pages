@@ -6,10 +6,6 @@
   {% snippet form_snippet, page=page, data=data, errors=errors %}
 {% endblock %}
 
-{% block main_content %}
-   {{ self.flash() }}
-   {{ self.toolbar() }}
-   <div class="wrapper no-nav">
-     {{ self.primary_content() }}
-   </div>
+{% block primary_content %}
+  {{ super() }}
 {% endblock %}

@@ -26,13 +26,13 @@
       {% else %}
         {% set url = h.url_for(controller='ckanext.pages.controller:PagesController', action='pages_show', page='/' + page.name) %}
       {% endif %}
-      <div class="row page-list-item dataset-item">
+      <div class="page-list-item dataset-item row">
       {% if page.image %}
-        <div class="span3 image">
+        <div class="col-md-3 image">
           <a style="background-image:url({{ page.image }})" href="{{ url }}">
           </a>
         </div>
-        <div class="span8">
+        <div class="col-md-8">
            <h3 class="dataset-heading">
               <a href="{{ url }}" >{{ page.title }}</a>
               {% if page.publish_date %}
@@ -52,7 +52,7 @@
             {% endif %}
         </div>
       {% else %}
-        <div class="span11">
+        <div class="col-md-11">
           <h3 class="dataset-heading">
             <a href="{{ url }}" >{{ page.title }}</a>
             {% if page.publish_date %}
