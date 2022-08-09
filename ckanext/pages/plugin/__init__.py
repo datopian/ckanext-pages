@@ -10,7 +10,7 @@ from six.moves.urllib.parse import quote
 import ckantoolkit as tk
 
 import ckan.plugins as p
-from ckan.lib.helpers import build_nav_main as core_build_nav_main
+from ckanext.fcscopendata.lib.helpers import build_nav_main as core_build_nav_main
 
 from ckanext.pages import actions, db
 from ckanext.pages import auth
