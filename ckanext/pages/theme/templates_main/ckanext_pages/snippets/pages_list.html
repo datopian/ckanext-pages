@@ -3,14 +3,14 @@
 
 {#
 {% if type == 'blog' %}
-  <h2>{{ _('1 News article') if pages_total == 1 else _('{0} blog articles').format(pages_total) }}</h2>
+  <h2>{{ _('1 blog article') if pages_total == 1 else _('{0} blog articles').format(pages_total) }}</h2>
 {% else %}
   <h2>{{ _('1 page') if pages_total == 1 else _('{0} pages').format(pages_total) }}</h2>
 {% endif %}
 #}
 
 {% if type == 'blog' %}
-  <h2>News</h2>
+  <h2>Blog</h2>
 {% else %}
  <h2>Pages</h2>
 {% endif %}
@@ -28,28 +28,28 @@
       {% endif %}
       <div class="row page-list-item dataset-item">
       {% if page.image %}
+      <div class="span8">
+        <h3 class="dataset-heading">
+           <a href="{{ url }}" >{{ page.title }}</a>
+           {% if page.publish_date %}
+              <small class="date"> {{ h.render_datetime(page.publish_date) }} </small>
+           {% endif %}
+         </h3>
+         {% if page.content %}
+           {% if editor %}
+           <div>
+             {{page.content|striptags|truncate}}
+           </div>
+           {% else %}
+             {{ h.markdown_extract(page.content) }}
+           {% endif %}
+         {% else %}
+           <p class="empty">{{ _('This page currently has no content') }}</p>
+         {% endif %}
+     </div>
         <div class="span3 image">
           <a style="background-image:url({{ page.image }})" href="{{ url }}">
           </a>
-        </div>
-        <div class="span8">
-           <h3 class="dataset-heading">
-              <a href="{{ url }}" >{{ page.title }}</a>
-              {% if page.publish_date %}
-                 <small class="date"> {{ h.render_datetime(page.publish_date) }} </small>
-              {% endif %}
-            </h3>
-            {% if page.content %}
-              {% if editor %}
-              <div>
-                {{page.content|striptags|truncate}}
-              </div>
-              {% else %}
-                {{ h.markdown_extract(page.content) }}
-              {% endif %}
-            {% else %}
-              <p class="empty">{{ _('This page currently has no content') }}</p>
-            {% endif %}
         </div>
       {% else %}
         <div class="span11">
@@ -77,7 +77,7 @@
 
 {% else %}
     {% if type == 'blog' %}
-      <p class="empty">{{ _('There are currently no news articles here') }}</p>
+      <p class="empty">{{ _('There are currently no blog articles here') }}</p>
     {% else %}
       <p class="empty">{{ _('There are currently no pages here') }}</p>
     {% endif %}
