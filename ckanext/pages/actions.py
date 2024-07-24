@@ -16,6 +16,10 @@ import ckan.authz as authz
 
 from ckanext.pages import db
 
+import logging
+
+log = logging.getLogger(__name__)
+
 
 class HTMLFirstImage(HTMLParser):
     def __init__(self):
@@ -90,16 +94,22 @@ def _pages_list(context, data_dict):
 def _pages_delete(context, data_dict):
     org_id = data_dict.get('org_id')
     page = data_dict.get('page')
+
     out = db.Page.get(group_id=org_id, name=page)
+
     if out:
         session = context['session']
+
+        _reorder_pages(session, org_id, updated_page=out, remove=True)
+
         session.delete(out)
         session.commit()
 
 
 def _pages_update(context, data_dict):
     org_id = data_dict.get('org_id')
-    page = data_dict.get('page')
+    page = data_dict.get('page') or data_dict.get('name')
+
     # we need the page in the context for name validation
     context['page'] = page
     context['group_id'] = org_id
@@ -111,6 +121,7 @@ def _pages_update(context, data_dict):
         raise p.toolkit.ValidationError(errors)
 
     out = db.Page.get(group_id=org_id, name=page)
+
     if not out:
         out = db.Page()
         out.group_id = org_id
@@ -121,39 +132,6 @@ def _pages_update(context, data_dict):
     # backward compatible with older version where page_type does not exist
     for item in items:
         setattr(out, item, data.get(item, 'page' if item == 'page_type' else None))
-
-    new_order = data.get("order")
-
-    if new_order is not None:
-        new_order = int(new_order)
-        session = context["session"]
-        existing_pages = (
-            session.query(db.Page).order_by(sa.cast(db.Page.order, sa.Integer)).all()
-        )
-
-        current_order = int(out.order) if out.order and out.order.isdigit() else None
-
-        for p in existing_pages:
-            p_order = int(p.order)
-
-            if p.name == page:
-                continue
-
-            if current_order is None or current_order == 0:
-                if p_order >= new_order:
-                    p.order = str(p_order + 1)
-            elif new_order < current_order:
-                if new_order <= p_order < current_order:
-                    p.order = str(p_order + 1)
-            elif new_order > current_order:
-                if current_order < p_order <= new_order:
-                    p.order = str(p_order - 1)
-
-            session.add(p)
-
-        out.order = str(new_order)
-        session.add(out)
-        session.commit()
 
     extras = {}
 
@@ -166,10 +144,64 @@ def _pages_update(context, data_dict):
     out.modified = datetime.datetime.utcnow()
     user = model.User.get(context['user'])
     out.user_id = user.id
-    out.save()
+
     session = context['session']
+
+    _reorder_pages(session, org_id, data.get('order'), out)
+
+    out.save()
     session.add(out)
     session.commit()
+
+
+def _sanitize_order(order):
+    if order in (None, "", 'None'):
+        return None
+    try:
+        value = int(order)
+        return value if value > 0 else None
+    except (ValueError, TypeError):
+        return None
+
+
+def _reorder_pages(session, org_id, new_order=None, updated_page=None, remove=False):
+    new_order = _sanitize_order(new_order)
+
+    existing_pages = (
+        session.query(db.Page)
+        .filter(db.Page.group_id == org_id)
+        .filter(db.Page.order.isnot(None))
+        .filter(db.Page.order != "")
+        .order_by(sa.cast(db.Page.order, sa.Integer))
+        .all()
+    )
+
+    hidden_pages = (
+        session.query(db.Page)
+        .filter(db.Page.group_id == org_id)
+        .filter((db.Page.order.is_(None)) | (db.Page.order == ""))
+        .all()
+    )
+
+    if updated_page:
+        existing_pages = [p for p in existing_pages if p.name != updated_page.name]
+        hidden_pages = [p for p in hidden_pages if p.name != updated_page.name]
+
+    if updated_page and not remove:
+        if new_order is None:
+            updated_page.order = None
+            hidden_pages.append(updated_page)
+        else:
+            updated_page.order = new_order
+            existing_pages.insert(min(new_order - 1, len(existing_pages)), updated_page)
+
+    for i, p in enumerate(existing_pages, start=1):
+        p.order = i
+        session.add(p)
+
+    for p in hidden_pages:
+        p.order = None
+        session.add(p)
 
 
 def pages_upload(context, data_dict):
