@@ -1,5 +1,6 @@
 import datetime
 import json
+import sqlalchemy as sa
 
 from ckan import model
 import ckan.plugins as p
@@ -120,6 +121,39 @@ def _pages_update(context, data_dict):
     # backward compatible with older version where page_type does not exist
     for item in items:
         setattr(out, item, data.get(item, 'page' if item == 'page_type' else None))
+
+    new_order = data.get("order")
+
+    if new_order is not None:
+        new_order = int(new_order)
+        session = context["session"]
+        existing_pages = (
+            session.query(db.Page).order_by(sa.cast(db.Page.order, sa.Integer)).all()
+        )
+
+        current_order = int(out.order) if out.order and out.order.isdigit() else None
+
+        for p in existing_pages:
+            p_order = int(p.order)
+
+            if p.name == page:
+                continue
+
+            if current_order is None or current_order == 0:
+                if p_order >= new_order:
+                    p.order = str(p_order + 1)
+            elif new_order < current_order:
+                if new_order <= p_order < current_order:
+                    p.order = str(p_order + 1)
+            elif new_order > current_order:
+                if current_order < p_order <= new_order:
+                    p.order = str(p_order - 1)
+
+            session.add(p)
+
+        out.order = str(new_order)
+        session.add(out)
+        session.commit()
 
     extras = {}
 
