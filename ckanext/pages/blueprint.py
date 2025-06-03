@@ -102,15 +102,15 @@ pages.add_url_rule("/pages_delete/<page>", view_func=pages_delete, endpoint='del
 pages.add_url_rule("/pages_upload", view_func=upload, methods=['POST'])
 
 
-pages.add_url_rule("/blog", view_func=blog_index)
-pages.add_url_rule("/blog/<page>", view_func=blog_show)
-pages.add_url_rule("/blog/<page>/revisions", view_func=blog_revisions)
-pages.add_url_rule("/blog/<page>/revisions/<revision>", view_func=blog_revisions_preview)
-pages.add_url_rule("/blog/<page>/revisions/<revision>/restore", view_func=blog_revision_restore, methods=['GET'])
-pages.add_url_rule("/blog_edit", view_func=blog_edit, endpoint='blog_new', methods=['GET', 'POST'])
-pages.add_url_rule("/blog_edit/", view_func=blog_edit, endpoint='blog_new', methods=['GET', 'POST'])
-pages.add_url_rule("/blog_edit/<page>", view_func=blog_edit, endpoint='blog_edit', methods=['GET', 'POST'])
-pages.add_url_rule("/blog_delete/<page>", view_func=blog_delete, endpoint='blog_delete', methods=['GET', 'POST'])
+pages.add_url_rule("/news", view_func=blog_index)
+pages.add_url_rule("/news/<page>", view_func=blog_show)
+pages.add_url_rule("/news/<page>/revisions", view_func=blog_revisions)
+pages.add_url_rule("/news/<page>/revisions/<revision>", view_func=blog_revisions_preview)
+pages.add_url_rule("/news/<page>/revisions/<revision>/restore", view_func=blog_revision_restore, methods=['GET'])
+pages.add_url_rule("/news_edit", view_func=blog_edit, endpoint='blog_new', methods=['GET', 'POST'])
+pages.add_url_rule("/news_edit/", view_func=blog_edit, endpoint='blog_new', methods=['GET', 'POST'])
+pages.add_url_rule("/news_edit/<page>", view_func=blog_edit, endpoint='blog_edit', methods=['GET', 'POST'])
+pages.add_url_rule("/news_edit/<page>", view_func=blog_delete, endpoint='blog_delete', methods=['GET', 'POST'])
 
 
 pages.add_url_rule("/organization/pages/<id>", view_func=org_show, endpoint='organization_pages_index')
