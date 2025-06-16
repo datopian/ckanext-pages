@@ -2,13 +2,13 @@
 
 {% block header_account_logged %}
   <li>
-    <a href="{{ h.url_for('pages.pages_index') }}" title="{{ _('Pages') }}">
+    <a href="/pages/documentation" title="{{ _('Pages') }}">
       <i class="fa fa-file icon-file"></i>
     </a>
   </li>
   <li>
     <a href="{{ h.url_for('pages.blog_index') }}" title="{{ _('News') }}">
-      <i class="fa fa-pencil icon-pencil"></i>
+      <i class="fa fa-newspaper icon-newspaper"></i>
     </a>
   </li>
   {{ super() }}
