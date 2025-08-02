@@ -130,3 +130,9 @@ span[lang]
 	max-height: 1080px;
 	margin:0 auto;
 }
+
+.table-container table {
+    display: block;
+    width: max-content;
+    overflow-x: auto;
+}
