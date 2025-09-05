@@ -110,7 +110,7 @@ pages.add_url_rule("/news/<page>/revisions/<revision>/restore", view_func=blog_r
 pages.add_url_rule("/news_edit", view_func=blog_edit, endpoint='blog_new', methods=['GET', 'POST'])
 pages.add_url_rule("/news_edit/", view_func=blog_edit, endpoint='blog_new', methods=['GET', 'POST'])
 pages.add_url_rule("/news_edit/<page>", view_func=blog_edit, endpoint='blog_edit', methods=['GET', 'POST'])
-pages.add_url_rule("/news_edit/<page>", view_func=blog_delete, endpoint='blog_delete', methods=['GET', 'POST'])
+pages.add_url_rule("/news_delete/<page>", view_func=blog_delete, endpoint='blog_delete', methods=['GET', 'POST'])
 
 
 pages.add_url_rule("/organization/pages/<id>", view_func=org_show, endpoint='organization_pages_index')
