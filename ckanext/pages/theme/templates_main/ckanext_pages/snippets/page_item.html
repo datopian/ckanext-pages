@@ -26,7 +26,9 @@
           {{ h.get_plain_text_excerpt(page.content, 200) }}
         </div>
         {% else %}
+        <div>
           {{ h.markdown_extract(page.content) }}
+        </div>
         {% endif %}
       {% else %}
         <p class="empty">{{ _('This page currently has no content') }}</p>
