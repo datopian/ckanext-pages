@@ -23,7 +23,7 @@
       {% if page.content %}
         {% if editor %}
         <div>
-          {{page.content|striptags|truncate}}
+          {{ h.get_plain_text_excerpt(page.content, 200) }}
         </div>
         {% else %}
           {{ h.markdown_extract(page.content) }}

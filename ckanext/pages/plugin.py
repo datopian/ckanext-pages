@@ -68,6 +68,26 @@ def render_content(content):
 def get_wysiwyg_editor():
     return tk.config.get('ckanext.pages.editor', '')
 
+def get_plain_text_excerpt(html_content, length=200):
+    """Extract plain text from HTML and truncate"""
+    from bs4 import BeautifulSoup
+    import re
+    
+    # Parse HTML
+    soup = BeautifulSoup(html_content, 'html.parser')
+    
+    # Get text content
+    text = soup.get_text(separator=' ', strip=True)
+    
+    # Clean up whitespace
+    text = re.sub(r'\s+', ' ', text).strip()
+    
+    # Truncate
+    if len(text) > length:
+        text = text[:length].rsplit(' ', 1)[0] + '...'
+    
+    return text
+
 
 def get_recent_blog_posts(number=5, exclude=None):
     blog_list = tk.get_action('ckanext_pages_list')(
@@ -122,6 +142,7 @@ class PagesPlugin(PagesPluginBase):
             'render_content': render_content,
             'pages_get_wysiwyg_editor': get_wysiwyg_editor,
             'get_recent_blog_posts': get_recent_blog_posts,
+            'get_plain_text_excerpt': get_plain_text_excerpt
         }
 
     def get_actions(self):
