@@ -27,7 +27,7 @@
         </div>
         {% else %}
         <div>
-          {{ h.markdown_extract(page.content) }}
+          {{ h.markdown_extract(h.get_plain_text_excerpt(page.content, 200)) }}
         </div>
         {% endif %}
       {% else %}
