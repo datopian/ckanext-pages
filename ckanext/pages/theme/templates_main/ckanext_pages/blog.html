@@ -51,7 +51,7 @@
                 </h3>
             </div>
             <div class="blog-content">
-                {{ h.markdown_extract(post.content) }}
+                {{ h.markdown_extract(h.get_plain_text_excerpt(post.content, 200)) }}
                 {% if post.publish_date %}
                    <br>
                     <a class="btn btn-small btn-primary more" href="{{ h.url_for('pages.blog_show', page='/' + post.name) }}">{{ _('More') }}</a>
